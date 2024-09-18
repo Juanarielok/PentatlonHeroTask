@@ -36,7 +36,7 @@
           </button>
         </form>
 
-        <!-- List of superheroes -->
+
         <div v-if="superheroes.length" class="bg-indigo-50 dark:bg-gray-900 p-8">
           <h3 class="text-3xl font-bold text-center text-indigo-800 dark:text-yellow-400 mb-8">Changes saved!</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
