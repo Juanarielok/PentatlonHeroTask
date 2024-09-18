@@ -1,8 +1,7 @@
 #  Pentatlón de Superhéroes!
+![Preview](./main.png)
 
-(./main.png)
-
-:page_with_curl: Descripcion/About
+#  Descripcion/About :page_with_curl: 
 
 
 <details>
@@ -20,10 +19,17 @@ I developed a superhero pentathlon in Vue.js using TypeScript and Tailwind. I im
 
 
 
-
+# Technologies Used :hammer_and_wrench:
 </details>
-:hammer_and_wrench: Stacks
-TypeScript
-Vue.js
-Tailwind
-Css
+ 
+
+- Vue
+- TypeScript
+- JavaScript
+- HTML
+- CSS
+- Tailwind
+
+
+![Howto1](./screen1.png)
+
