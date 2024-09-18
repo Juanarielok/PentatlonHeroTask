@@ -17,8 +17,10 @@
             </label>
             <input type="file" id="image" @change="onImageChange" accept="image/*" class="hidden" />
           </div>
-          <div v-if="superhero.picture" class="mb-6">
-            <img :src="superhero.picture" alt="Superhero" class="w-full max-h-64 object-cover rounded-lg shadow-md" />
+          <div v-if="superhero.picture" class="mb-6 flex justify-center">
+            <div class="w-32 h-32 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
+              <img :src="superhero.picture" alt="Superhero" class="w-32 h-32 object-cover" />
+            </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div v-for="(value, key) in superhero.attributes" :key="key" class="flex flex-col items-center">
