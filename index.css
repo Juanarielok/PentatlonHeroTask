@@ -1,0 +1,14 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+body {
+    background-color: rgb(0, 0, 0); 
+    color: white;
+  }
+
+  .dark .bg-indigo-800 {
+    background-color: #4a4a4a; 
+  }
+  

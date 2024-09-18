@@ -1,39 +1,40 @@
 <template>
-  <div class="superhero-management">
-    <div v-if="loading" class="loading">Loading...</div>
+    <h1 class="text-3xl font-bold mb-6 text-center transition-colors duration-300 dark:text-yellow-400 text-blue-600">
+      Edit Your Heroes!
+    </h1>
+  <div class="max-w-7xl mx-auto p-6 transition-colors duration-300 dark:bg-gray-800">
+    <div v-if="loading" class="text-center text-xl dark:text-white">Loading...</div>
     <div v-else>
-      <SuperheroForm 
-        @submit="handleCreateHero" 
-        :isEditing="false"
-      />
-      <div class="hero-list">
-        <div v-for="hero in heroes" :key="hero.id" class="hero-card">
-          <img :src="hero.picture" :alt="hero.name" class="hero-image">
-          <h3 class="hero-name">{{ hero.name }}</h3>
-          <div class="hero-attributes">
-            <div v-for="(value, key) in hero.attributes" :key="key" class="hero-attribute">
-              <span class="attribute-name">{{ key }}:</span>
-              <div class="skill-bar">
-                <div class="skill-fill" :style="{ width: (value / 10) * 100 + '%' }"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+        <div v-for="hero in heroes" :key="hero.id" class="bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl">
+          <img :src="hero.picture" :alt="hero.name" class="w-full h-48 object-cover">
+          <h3 class="px-4 py-2 text-center text-lg font-semibold dark:text-white">{{ hero.name }}</h3>
+          <div class="px-4 pb-4">
+            <div v-for="(value, key) in hero.attributes" :key="key" class="flex items-center mb-2">
+              <span class="font-bold mr-2 dark:text-white">{{ key }}:</span>
+              <div class="flex-grow h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div class="h-full bg-blue-500" :style="{ width: (value / 10) * 100 + '%' }"></div>
               </div>
-              <span class="attribute-value">{{ value }}</span>
+              <span class="ml-2 dark:text-white">{{ value }}</span>
             </div>
           </div>
-          <div class="hero-actions">
-            <button @click="startEditing(hero)" class="edit-button">Edit</button>
-            <button @click="handleDeleteHero(hero.id)" class="delete-button">Delete</button>
+          <div class="flex justify-around p-4">
+            <button @click="startEditing(hero)" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">Edit</button>
+            <button @click="handleDeleteHero(hero.id)" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Delete</button>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="editingHero" class="modal">
-      <div class="modal-content">
-        <SuperheroForm 
-          @submit="handleUpdateHero" 
-          :initialHero="editingHero" 
-          :isEditing="true"
-        />
-        <button @click="cancelEditing" class="cancel-button">Cancel</button>
+    <div v-if="editingHero" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 overflow-y-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md mx-auto">
+        <div class="p-6">
+          <SuperheroForm 
+            @submit="handleUpdateHero" 
+            :initialHero="editingHero" 
+            :isEditing="true"
+          />
+          <button @click="cancelEditing" class="mt-4 w-full px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -114,161 +115,8 @@ export default defineComponent({
       handleUpdateHero, 
       handleDeleteHero,
       startEditing,
-      cancelEditing
+      cancelEditing,
     }
   }
 })
 </script>
-
-<style scoped>
-.superhero-management {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.main-title {
-  text-align: center;
-  color: #ffffff;
-  margin-bottom: 30px;
-}
-
-.loading {
-  text-align: center;
-  font-size: 1.5em;
-  color: #ffffff;
-}
-
-.hero-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.hero-card {
-  background-color: #ffffff00;
-  border-radius: 10px;
-  overflow: hidden;
-  transition: transform 0.3s;
-}
-
-.hero-card:hover {
-  transform: translateY(-5px);
-}
-
-.hero-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.hero-name {
-  padding: 10px;
-  text-align: center;
-  font-size: 1.2em;
-  color: #ffffff;
-}
-
-.hero-attributes {
-  padding: 0 10px 10px;
-}
-
-.hero-attribute {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.skill-bar {
-  flex-grow: 1;
-  height: 10px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 5px;
-  margin: 0 10px;
-  overflow: hidden;
-}
-
-.skill-fill {
-  height: 100%;
-  background-color: white;
-  transition: width 0.3s ease;
-}
-
-.attribute-name {
-  font-weight: bold;
-  color: #ffffff;
-}
-
-.attribute-value {
-  color: #ffffff;
-  margin-left: 5px;
-}
-
-.hero-actions {
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
-}
-
-.edit-button, .delete-button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.edit-button {
-  background-color: #dbbc34;
-  color: white;
-}
-
-.edit-button:hover {
-  background-color: #b6b929;
-}
-
-.delete-button {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.delete-button:hover {
-  background-color: #c0392b;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 500px;
-  width: 100%;
-}
-
-.cancel-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #95a5a6;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.cancel-button:hover {
-  background-color: #7f8c8d;
-}
-</style>

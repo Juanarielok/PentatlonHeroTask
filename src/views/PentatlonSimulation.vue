@@ -1,72 +1,119 @@
 <template>
-  <div>
-    <h1>Pentathlon Simulation</h1>
+  <div class="max-w-7xl mx-auto p-6 space-y-8 transition-colors duration-300 dark:bg-gray-800">
+    <h1 class="text-4xl font-bold text-center text-indigo-600 dark:text-yellow-400">Pentathlon Simulation</h1>
 
-    <div v-if="selectedHeroes.length < 3">
-      <h2>Select 3 Superheroes:</h2>
+    <div v-if="selectedHeroes.length < 3" class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 space-y-4">
+      <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Select 3 Superheroes:</h2>
 
-      <!-- Dropdowns for selecting heroes -->
-      <div v-for="(hero, index) in 3" :key="index" class="hero-dropdown">
-        <label :for="'hero-dropdown-' + index">Select Hero {{ index + 1 }}:</label>
-        <select :id="'hero-dropdown-' + index" v-model="selectedHeroIds[index]" @change="updateSelectedHero(index)">
-          <option disabled value="">Select a superhero</option>
-          <option v-for="hero in availableHeroes" :key="hero.id" :value="hero.id">
-            {{ hero.name }}
-          </option>
-        </select>
+      <div v-for="(hero, index) in 3" :key="index" class="space-y-2">
+        <label :for="'hero-dropdown-' + index" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Select Hero {{ index + 1 }}:
+        </label>
+        <div class="relative">
+          <button 
+            :id="'hero-dropdown-' + index"
+            @click="toggleDropdown(index)"
+            class="w-full text-left px-4 py-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-white"
+          >
+            {{ selectedHeroIds[index] ? heroes.find(h => h.id === selectedHeroIds[index])?.name : 'Select a superhero' }}
+          </button>
+          <div v-if="openDropdown === index" class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-600 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+            <div
+              v-for="hero in availableHeroes"
+              :key="hero.id"
+              @click="selectHero(index, hero.id)"
+              class="cursor-pointer select-none relative py-2 pl-3 pr-9 text-gray-900 dark:text-white hover:bg-indigo-600 hover:text-white"
+            >
+              {{ hero.name }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div v-else>
-      <h2>Selected Superheroes:</h2>
-      <ul>
-        <li v-for="(hero, index) in selectedHeroes" :key="hero.id">
-          {{ hero.name }} - {{ hero.attributes.strength }} strength, {{ hero.attributes.agility }} agility, 
-          {{ hero.attributes.charisma }} charisma
-          <img :src="hero.picture" alt="Superhero Image" class="selected-hero-image" />
-          <span>Number: {{ index + 1 }}</span>
-        </li>
-      </ul>
-      <button @click="runSimulation">Run Simulation</button>
+    <div v-else class="space-y-6">
+      <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Selected Superheroes:</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div v-for="(hero, index) in selectedHeroes" :key="hero.id" class="bg-gray-100 dark:bg-gray-600 rounded-lg overflow-hidden shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl">
+            <img :src="hero.picture" :alt="hero.name" class="w-32 h-32 object-cover rounded-full mx-auto mt-4">
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-gray-800 dark:text-white text-center mb-2">{{ hero.name }}</h3>
+              <div class="space-y-2">
+                <div v-for="(value, key) in hero.attributes" :key="key" class="flex items-center">
+                  <span class="font-bold mr-2 text-gray-700 dark:text-gray-300 w-24">{{ key }}:</span>
+                  <div class="flex-grow h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-500" :style="{ width: (value / 10) * 100 + '%' }"></div>
+                  </div>
+                  <span class="ml-2 text-gray-700 dark:text-gray-300">{{ value }}</span>
+                </div>
+              </div>
+              <span class="mt-2 inline-block px-2 py-1 bg-indigo-500 text-white text-xs rounded-full">Number: {{ index + 1 }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button @click="runSimulation" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
+        Run Simulation
+      </button>
     </div>
 
-    <div v-if="eventResults.length">
-      <h2>Event Results:</h2>
-
-      <!-- Event results grid -->
-      <table class="results-grid">
-        <thead>
-          <tr>
-            <th>Hero</th>
-            <th>Skyscraper Climbing</th>
-            <th>Telling a Joke</th>
-            <th>Villain Shooting</th>
-            <th>200km Sprint</th>
-            <th>Rescuing 100 Kittens</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="result in eventResults" :key="result.hero.id">
-            <td>{{ result.hero.name }}</td>
-            <td>{{ result.scores[0].points }} ({{ result.scores[0].place }} place)</td>
-            <td>{{ result.scores[1].points }} ({{ result.scores[1].place }} place)</td>
-            <td>{{ result.scores[2].points }} ({{ result.scores[2].place }} place)</td>
-            <td>{{ result.scores[3].points }} ({{ result.scores[3].place }} place)</td>
-            <td>{{ result.scores[4].points }} ({{ result.scores[4].place }} place)</td>
-          </tr>
-        </tbody>
-      </table>
+    <div v-if="eventResults.length" class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 mt-6">
+      <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Event Results:</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+          <thead class="bg-gray-50 dark:bg-gray-800">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Hero</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Skyscraper Climbing</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Telling a Joke</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Villain Shooting</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">200km Sprint</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Rescuing Kittens</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:divide-gray-600">
+            <tr v-for="result in eventResults" :key="result.hero.id">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                {{ result.hero.name }}
+              </td>
+              <td v-for="(score, index) in result.scores" :key="index" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                {{ score.points }} points ({{ score.place }} place)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div v-if="results.length">
-      <h2>Final Ranking:</h2>
-      <ol>
-        <li v-for="result in results" :key="result.hero.id">
-          {{ result.hero.name }} - Points: {{ result.points }}
-        </li>
-      </ol>
+    <div v-if="results.length" class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Final Ranking:</h2>
+        <ol class="space-y-2">
+          <li v-for="(result, index) in results" :key="result.hero.id" 
+              :class="[
+                'flex items-center p-3 rounded-lg transition-all duration-300 hover:shadow-md',
+                index === 0 ? 'bg-yellow-100 dark:bg-yellow-900' :
+                index === 1 ? 'bg-gray-200 dark:bg-gray-700' :
+                index === 2 ? 'bg-orange-100 dark:bg-orange-900' :
+                'bg-gray-100 dark:bg-gray-600'
+              ]"
+          >
+            <span :class="[
+              'flex items-center justify-center w-8 h-8 rounded-full mr-4 text-xl',
+              index === 0 ? 'bg-yellow-500' :
+              index === 1 ? 'bg-gray-400' :
+              index === 2 ? 'bg-orange-500' :
+              'bg-indigo-500 text-white'
+            ]">
+              {{ index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1 }}
+            </span>
+            <span class="font-medium text-gray-800 dark:text-white">{{ result.hero.name }}</span>
+            <span class="ml-auto font-semibold text-indigo-600 dark:text-indigo-400">Points: {{ result.points }}</span>
+          </li>
+        </ol>
+      </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
@@ -82,16 +129,27 @@ export default defineComponent({
     const selectedHeroes = ref<Superhero[]>([]);
     const results = ref<Array<{ hero: Superhero, points: number }>>([]);
     const eventResults = ref<Array<{ hero: Superhero, scores: Array<{ points: number, place: number }> }>>([]);
+    const openDropdown = ref<number | null>(null);
 
     const availableHeroes = computed(() => {
       return heroes.value.filter(h => !selectedHeroIds.value.includes(h.id));
     });
 
+    const toggleDropdown = (index: number) => {
+      openDropdown.value = openDropdown.value === index ? null : index;
+    };
+
+    const selectHero = (index: number, heroId: number) => {
+      selectedHeroIds.value[index] = heroId;
+      updateSelectedHero(index);
+      openDropdown.value = null;
+    };
+
     const updateSelectedHero = (index: number) => {
       const selectedId = selectedHeroIds.value[index];
       const hero = heroes.value.find(h => h.id === selectedId);
       if (hero) {
-        selectedHeroes.value.splice(index, 1, hero);
+        selectedHeroes.value[index] = hero;
       }
     };
 
@@ -157,7 +215,7 @@ export default defineComponent({
       });
 
       // Sort final results based on total points
-      results.value.sort((a, b) => b.points - a.points);
+      results.value.sort((a, b) => b.points - a.results);
     };
 
     onMounted(() => {
@@ -167,41 +225,18 @@ export default defineComponent({
     });
 
     return {
+      heroes,
       availableHeroes,
       selectedHeroIds,
       selectedHeroes,
       results,
       eventResults,
+      openDropdown,
+      toggleDropdown,
+      selectHero,
       updateSelectedHero,
       runSimulation,
     };
   }
 });
 </script>
-
-<style scoped>
-.selected-hero-image {
-  width: 100px;
-  height: 100px;
-  border-radius: 5px;
-}
-.hero-dropdown {
-  margin-bottom: 15px;
-}
-.results-grid {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-.results-grid th, .results-grid td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-}
-.results-grid th {
-  background-color: #f2f2f2;
-}
-div {
-  color: white; /* Font color set to white */
-}
-</style>

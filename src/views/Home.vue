@@ -1,14 +1,14 @@
 <template>
     <div>
       <SuperHeroForm @submit="handleCreateSuperhero" />
-      <SuperHeroList :heroes="heroes" @edit="editSuperhero" @delete="deleteSuperhero" />
+      
     </div>
   </template>
   
   <script lang="ts">
   import { defineComponent, ref, onMounted } from 'vue'
   import SuperHeroForm from '../components/SuperHeroForm.vue'
-  import SuperHeroList from '../components/SuperHeroList.vue'
+ 
   import { Superhero } from '../types/superhero'
   import { getHeroes, createHero as apiCreateSuperhero, updateHero, deleteHero as apiDeleteSuperhero } from '../services/api'
   
@@ -16,7 +16,7 @@
     name: 'SuperheroManagement',
     components: {
       SuperHeroForm,
-      SuperHeroList
+  
     },
     setup() {
       const heroes = ref<Superhero[]>([])
