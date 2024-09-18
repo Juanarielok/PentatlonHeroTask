@@ -17,7 +17,7 @@ I developed a superhero pentathlon in Vue.js using TypeScript and Tailwind. I im
 <br />
 </details>
 
-# Click on the thumbnail to see the walkthrough
+# Click on the thumbnail to see the walkthrough/ Clic aquí para ver la demostración!▶️
 [![Watch the video](https://gcdnb.pbrd.co/images/nbfS6NO1J7qO.png?o=1)](https://www.youtube.com/watch?v=cfR62MX-j8w&ab_channel=Juani)
 
 
