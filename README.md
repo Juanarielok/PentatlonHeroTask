@@ -1,4 +1,4 @@
-#  Pentatlón de Superhéroes!
+#  Pentatlón de Superhéroes! 🦸🦹‍♂️
 ![Preview](./main.png)
 
 #  Descripcion/About :page_with_curl: 
